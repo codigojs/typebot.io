@@ -14,7 +14,7 @@ services:
       - POSTGRES_PASSWORD=typebot
 
   typebot-builder:
-    image: baptistearno/typebot-builder:latest
+    image: roylans/typebot-builder:latest
     restart: always
     depends_on:
       - typebot-db
