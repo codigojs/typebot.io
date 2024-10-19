@@ -20,6 +20,8 @@ import { segmentBlock } from '@typebot.io/segment-block'
 import { segmentCredentialsSchema } from '@typebot.io/segment-block/schemas'
 import { groqBlock } from '@typebot.io/groq-block'
 import { groqCredentialsSchema } from '@typebot.io/groq-block/schemas'
+import { woocommerceBlock } from '@typebot.io/woocommerce-block'
+import { woocommerceCredentialsSchema } from '@typebot.io/woocommerce-block/schemas'
 
 export const forgedCredentialsSchemas = {
   [openAIBlock.id]: openAICredentialsSchema,
@@ -33,4 +35,5 @@ export const forgedCredentialsSchemas = {
   [nocodbBlock.id]: nocodbCredentialsSchema,
   [segmentBlock.id]: segmentCredentialsSchema,
   [groqBlock.id]: groqCredentialsSchema,
+  [woocommerceBlock.id]: woocommerceCredentialsSchema,
 }
