@@ -17,31 +17,31 @@ interface WooCommerceCustomer {
 }
 
 export const getCustomer = createAction({
-  name: 'Buscar cliente',
+  name: 'Search Customer',
   auth,
   options: option.object({
     querySearch: option.string.layout({
-      label: 'Término de búsqueda',
-      placeholder: 'Ingrese el termino de busqueda (nombre y apellidos)',
+      label: 'Search term',
+      placeholder: 'Enter the search term (name and last name)',
     }),
     clientEmail: option.string.layout({
-      label: 'Correo electrónico',
-      placeholder: 'Ingrese el correo electrónico del cliente',
+      label: 'Email',
+      placeholder: 'Enter the email of the customer',
     }),
     responseMapping: option
       .saveResponseArray([
         'ID',
         'Email',
-        'Nombre',
-        'Apellido',
-        'Nombre de usuario',
-        'Dirección',
-        'Ciudad',
-        'País',
-        'Teléfono',
+        'Name',
+        'Last Name',
+        'Username',
+        'Address',
+        'City',
+        'Country',
+        'Phone',
       ])
       .layout({
-        accordion: 'Guardar respuesta',
+        accordion: 'Save response',
       }),
   }),
   getSetVariableIds: ({ responseMapping }) =>
@@ -52,11 +52,11 @@ export const getCustomer = createAction({
       const { querySearch, clientEmail, responseMapping } = options
 
       if (!url || !clientKey || !clientSecret) {
-        return logs.add('Faltan credenciales de WooCommerce')
+        return logs.add('Missing WooCommerce credentials')
       }
 
       if (!querySearch && !clientEmail) {
-        return logs.add('Faltan parámetros de búsqueda')
+        return logs.add('Missing search parameters')
       }
 
       const baseUrl = `${url}customers`
@@ -73,13 +73,13 @@ export const getCustomer = createAction({
         })
 
         if (!response.ok) {
-          throw new Error(`Error HTTP! estado: ${response.status}`)
+          throw new Error(`HTTP error! status: ${response.status}`)
         }
 
         const customers = (await response.json()) as WooCommerceCustomer[]
 
         if (customers.length === 0) {
-          return logs.add('No se encontraron clientes')
+          return logs.add('No customers found')
         }
 
         const customer = customers[0]
@@ -95,25 +95,25 @@ export const getCustomer = createAction({
             case 'Email':
               value = customer.email
               break
-            case 'Nombre':
+            case 'Name':
               value = customer.first_name
               break
-            case 'Apellido':
+            case 'Last Name':
               value = customer.last_name
               break
-            case 'Nombre de usuario':
+            case 'Username':
               value = customer.username
               break
-            case 'Dirección':
+            case 'Address':
               value = customer.billing.address_1
               break
-            case 'Ciudad':
+            case 'City':
               value = customer.billing.city
               break
-            case 'País':
+            case 'Country':
               value = customer.billing.country
               break
-            case 'Teléfono':
+            case 'Phone':
               value = customer.billing.phone
               break
           }
@@ -123,7 +123,7 @@ export const getCustomer = createAction({
       } catch (error) {
         logs.add({
           status: 'error',
-          description: 'Error al obtener el cliente',
+          description: 'Error getting the customer',
           details: error instanceof Error ? error.message : String(error),
         })
       }

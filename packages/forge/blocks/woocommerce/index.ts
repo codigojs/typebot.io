@@ -1,14 +1,14 @@
 import { createBlock } from '@typebot.io/forge'
 import { WoocommerceLogo } from './logo'
 import { auth } from './auth'
-import { getOrder } from './actions/getOrder'
 import { getCustomer } from './actions/getCustomer'
+import { getOrder } from './actions/getOrder'
 
 export const woocommerceBlock = createBlock({
   id: 'woocommerce',
   name: 'Woocommerce',
-  tags: [],
+  tags: ['woocommerce'],
   LightLogo: WoocommerceLogo,
   auth,
-  actions: [getOrder, getCustomer],
+  actions: [getCustomer, getOrder],
 })

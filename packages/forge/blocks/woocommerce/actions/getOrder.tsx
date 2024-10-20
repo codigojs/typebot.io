@@ -5,28 +5,28 @@ import ky from 'ky'
 import { WooCommerceOrder } from '../models'
 
 export const getOrder = createAction({
-  name: 'Obtener pedido',
+  name: 'Get Order',
   auth,
   options: option.object({
     orderId: option.string.layout({
-      label: 'ID del pedido',
-      placeholder: 'Ingrese el ID del pedido',
+      label: 'Order ID',
+      placeholder: 'Enter the order ID',
     }),
     responseMapping: option
       .saveResponseArray([
         'ID',
-        'Estado',
+        'Status',
         'Total',
-        'Moneda',
-        'Fecha de creación',
-        'Nota del cliente',
-        'Nombre del cliente',
-        'Email del cliente',
-        'Productos',
-        'Envío',
+        'Currency',
+        'Creation Date',
+        'Customer Note',
+        'Customer Name',
+        'Customer Email',
+        'Products',
+        'Shipping',
       ])
       .layout({
-        accordion: 'Guardar respuesta',
+        accordion: 'Save response',
       }),
   }),
   getSetVariableIds: ({ responseMapping }) =>
@@ -37,11 +37,11 @@ export const getOrder = createAction({
       const { orderId, responseMapping } = options
 
       if (!url || !clientKey || !clientSecret) {
-        return logs.add('Faltan credenciales de WooCommerce')
+        return logs.add('Missing WooCommerce credentials')
       }
 
       if (!orderId) {
-        return logs.add('Falta el ID del pedido')
+        return logs.add('Missing order ID')
       }
 
       const baseUrl = `${url}orders/${orderId}`
@@ -55,11 +55,10 @@ export const getOrder = createAction({
         })
 
         if (!response.ok) {
-          throw new Error(`Error HTTP! estado: ${response.status}`)
+          throw new Error(`HTTP error! status: ${response.status}`)
         }
 
         const order = (await response.json()) as WooCommerceOrder
-        console.log(order)
 
         responseMapping?.forEach((mapping) => {
           if (!mapping.variableId) return
@@ -69,31 +68,31 @@ export const getOrder = createAction({
             case 'ID':
               value = order.id
               break
-            case 'Estado':
+            case 'Status':
               value = order.status
               break
             case 'Total':
               value = order.total
               break
-            case 'Moneda':
+            case 'Currency':
               value = order.currency
               break
-            case 'Fecha de creación':
+            case 'Creation Date':
               value = order.date_created
               break
-            case 'Nota del cliente':
+            case 'Customer Note':
               value = order.customer_note
               break
-            case 'Nombre del cliente':
+            case 'Customer Name':
               value = `${order.billing.first_name} ${order.billing.last_name}`
               break
-            case 'Email del cliente':
+            case 'Customer Email':
               value = order.billing.email
               break
-            case 'Productos':
+            case 'Products':
               value = order.line_items
               break
-            case 'Envío':
+            case 'Shipping':
               value = order.shipping_lines
               break
           }
@@ -103,7 +102,7 @@ export const getOrder = createAction({
       } catch (error) {
         logs.add({
           status: 'error',
-          description: 'Error al obtener el pedido',
+          description: 'Error getting the order',
           details: error instanceof Error ? error.message : String(error),
         })
       }

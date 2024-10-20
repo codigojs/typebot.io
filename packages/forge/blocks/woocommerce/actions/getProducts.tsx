@@ -15,27 +15,27 @@ interface WooCommerceProduct {
 }
 
 export const getProduct = createAction({
-  name: 'Obtener producto',
+  name: 'Get Product',
   auth,
   options: option.object({
     productId: option.string.layout({
-      label: 'ID del producto',
-      placeholder: 'Ingrese el ID del producto',
+      label: 'Product ID',
+      placeholder: 'Enter the product ID',
     }),
     responseMapping: option
       .saveResponseArray([
         'ID',
-        'Nombre',
-        'Precio',
-        'Precio regular',
-        'Precio de oferta',
-        'Descripción',
-        'Descripción corta',
-        'Categorías',
-        'Imágenes',
+        'Name',
+        'Price',
+        'Regular Price',
+        'Sale Price',
+        'Description',
+        'Short Description',
+        'Categories',
+        'Images',
       ])
       .layout({
-        accordion: 'Guardar respuesta',
+        accordion: 'Save response',
       }),
   }),
   getSetVariableIds: ({ responseMapping }) =>
@@ -46,11 +46,11 @@ export const getProduct = createAction({
       const { productId, responseMapping } = options
 
       if (!url || !clientKey || !clientSecret) {
-        return logs.add('Faltan credenciales de WooCommerce')
+        return logs.add('Missing WooCommerce credentials')
       }
 
       if (!productId) {
-        return logs.add('Falta el ID del producto')
+        return logs.add('Missing product ID')
       }
 
       const baseUrl = `${url}products/${productId}`
@@ -65,7 +65,7 @@ export const getProduct = createAction({
         })
 
         if (!response.ok) {
-          throw new Error(`Error HTTP! estado: ${response.status}`)
+          throw new Error(`HTTP error! status: ${response.status}`)
         }
 
         const product = (await response.json()) as WooCommerceProduct
@@ -78,28 +78,28 @@ export const getProduct = createAction({
             case 'ID':
               value = product.id
               break
-            case 'Nombre':
+            case 'Name':
               value = product.name
               break
-            case 'Precio':
+            case 'Price':
               value = product.price
               break
-            case 'Precio regular':
+            case 'Regular Price':
               value = product.regular_price
               break
-            case 'Precio de oferta':
+            case 'Sale Price':
               value = product.sale_price
               break
-            case 'Descripción':
+            case 'Description':
               value = product.description
               break
-            case 'Descripción corta':
+            case 'Short Description':
               value = product.short_description
               break
-            case 'Categorías':
+            case 'Categories':
               value = product.categories.map((cat: any) => cat.name).join(', ')
               break
-            case 'Imágenes':
+            case 'Images':
               value = product.images.map((img: any) => img.src).join(', ')
               break
           }
@@ -109,7 +109,7 @@ export const getProduct = createAction({
       } catch (error) {
         logs.add({
           status: 'error',
-          description: 'Error al obtener el producto',
+          description: 'Error getting the product',
           details: error instanceof Error ? error.message : String(error),
         })
       }
